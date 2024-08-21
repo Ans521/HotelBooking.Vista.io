@@ -1,0 +1,64 @@
+.nav {
+  cursor: pointer;
+}
+
+@media (max-width: 640px) {
+  .navbar {
+    display: none !important;
+  }
+}
+
+/* Second Button Code Start Here  */
+.logo {
+  cursor: pointer;
+}
+.btn {
+  position: relative;
+  padding: 0.5rem 0.5rem;
+  border: 1px solid #000;
+  border-radius: 0.25rem;
+  transition: color 0.3s ease-in-out;
+}
+
+.btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 0;
+  color: white;
+  z-index: 1;
+  transition: width 0.5s ease-in-out;
+  border-radius: 0.25rem;
+}
+
+.btn:hover::before {
+  width: 100%;
+  border-radius: 0.25rem;
+  background-color: #0f0f61;
+  z-index: -1;
+}
+
+.btn:hover {
+  /* transform: translateY(-0.3rem); */
+  color: white;
+  border-radius: 0.25rem;
+}
+
+/* Links Css style starts here */
+
+a {
+  font-weight: 600;
+  text-decoration: none;
+  font-size: 1.1rem;
+  transition: border-bottom 2s;
+  transition: transform 0.3s ease-in-out, border-bottom 0.3s ease-in;
+}
+.navbar a:hover {
+  transform: translateY(-0.2rem);
+  border-bottom: 1px solid #6a610d;
+  color: rgb(148, 88, 8);
+}
+
+/* now started media query code here */

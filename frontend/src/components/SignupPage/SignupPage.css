@@ -1,0 +1,23 @@
+/* styles.css */
+.underline-hover {
+    position: relative;
+    display: inline-block;
+  }
+
+  .underline-hover::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 2px;
+    margin-bottom: -3px;
+     /* Adjust height as needed */
+    background-color: #4f46e5; /* Adjust color as needed */
+    transition: width 0.3s ease; /* Adjust duration and easing as needed */
+  }
+
+  .underline-hover:hover::after {
+    width: 100%;
+  }
+
