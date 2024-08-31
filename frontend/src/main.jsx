@@ -9,7 +9,8 @@ import Account from "./components/account/Account.jsx";
 import HotelForm from "./components/account/HotelForm.jsx";
 import Booking from "./components/account/Booking.jsx";
 import BookingPage from "./components/account/BookingPage.jsx";
-
+import EditBooking from "./components/account/EditBooking.jsx";
+import WishlistHotels from "./wishlisthotels/WishlistHotels.jsx";
 const router = createBrowserRouter([
   {
     path: "/",
@@ -47,10 +48,14 @@ const router = createBrowserRouter([
     path :"account/bookings",
     element: <BookingPage/>
   },
-  // {
-  //   path :"account/bookings/:id",
-  //   element: <BookingPage/>
-  // }
+  {
+    path : "details/:id",
+    element : <EditBooking/>
+  },
+  {
+    path :"wishlist",
+    element: <WishlistHotels/>
+  }
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")).render(

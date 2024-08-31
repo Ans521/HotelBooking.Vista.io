@@ -72,7 +72,7 @@ function Booking() {
       place: hotel._id,
       price: hotel.price * totalDays });
   
-      if(data.message === "ok"){
+      if(data.message === "Booking created successfully"){
         alert("Booking successful");
         navigate('/account/bookings/');
   }

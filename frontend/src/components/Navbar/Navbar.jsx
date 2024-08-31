@@ -1,6 +1,6 @@
 import React, { useContext} from "react";
 import "./Navbar.css";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { UserContext } from "../ContextStore/userContext.jsx";
 function Navbar() {
@@ -25,10 +25,10 @@ function Navbar() {
         <h1 className="logo1 text-3xl">VISTA.IO</h1>
       </div>
       <div className="navbar flex md:flex-row justify-center items-center gap-4 md:gap-4 lg:gap-8 px-2 sm:mr-1 md:mr-5 lg:mr-10 py-2 mt-2">
-        <a href="#">Home</a>
-        <a href="#">Hotels</a>
-        <a href="#">Services</a>
-      </div>
+      <NavLink to="/">Home</NavLink>
+      <NavLink className={({ isActive }) => (isActive ? "text-customColor " : "")} to="/">Hotels</NavLink>
+      <NavLink to="/wishlist">Wishlist</NavLink>
+    </div>
       <div className="button mt-2 flex justify-center items-center space-x-2 sm:space-x-4 md:space-x-6 lg:space-x-8 p-2 sm:p-4 md:p-6 lg:p-8">
         <div className="btn">
           <Link 

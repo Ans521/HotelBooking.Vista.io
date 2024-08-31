@@ -23,7 +23,7 @@ function Account() {
     let classes =
       "inline-flex gap-1 font-semibold px-3 py-3 bg-gray-200 text-black rounded-full ";
     if (type === page) {
-      classes += "bg-blue-800 text-white rounded-full";
+      classes += "bg-blue-900 text-white rounded-full";
     }
     return classes;
   }
@@ -38,9 +38,9 @@ function Account() {
     <div className="account-container px-4 py-4 sm:px-6 md:px-8 lg:px-12">
       <header className="account-header flex justify-between items-center mb-6">
         <div className="brand-name text-2xl md:text-3xl font-bold">Vista.io</div>
-        <button className="btn-now-button relative px-4 py-2 border border-black rounded text-black text-sm sm:text-base md:text-lg lg:text-xl font-semibold hover:bg-blue-900 hover:text-white">
+        <Link to={'/'} className="btn-now-button relative px-4 py-2 border border-black rounded text-black text-sm sm:text-base md:text-lg lg:text-xl font-semibold hover:bg-blue-900 hover:text-white">
           Book Now
-        </button>
+        </Link>
       </header>
       <nav className="w-full flex justify-center text-center space-x-4 sm:space-x-6 md:space-x-8 lg:space-x-10 mt-8 mb-8">
         <Link to="/account" className={onHover("profile")}>

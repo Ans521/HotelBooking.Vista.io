@@ -5,8 +5,13 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        customColor: 'rgb(148, 88, 8)', // Adding the custom color
+      },
+    },
   },
   plugins: [],
-}
+};
+
 

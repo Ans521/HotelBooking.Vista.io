@@ -10,6 +10,7 @@ const multer = require("multer");
 const fs = require("fs");
 const hotelData = require("../Models/accom");
 const bookingHotel = require("../Models/booking");
+const Wishlist = require("../Models/wishlist");
 connectToDatabase();
 
 const registerUser = async (req, res) => {
@@ -143,6 +144,7 @@ const photoUploader = (req, res) => {
   });
 };
 
+// data insert in database of hotel
 const registerData = async (req, res) => {
   const { token } = req.cookies;
   const {
@@ -178,6 +180,7 @@ const registerData = async (req, res) => {
   }
 };
 
+// hotel ke record fetch krne ke liye
 const records = async (req, res) => {
   const { token } = req.cookies;
 
@@ -185,7 +188,7 @@ const records = async (req, res) => {
     if (err) throw err;
     const { id } = userDoc;
     const userHotels = await hotelData.find({ owner: id });
-    res.json({ message: "data added successfully", userHotels });
+    res.json({ message: "successfully", userHotels });
   });
 };
 
@@ -265,31 +268,131 @@ const getUserId = (req) => {
   });
 };
 
-const booking = async (req, res) => {
-  const userId = await getUserId(req);
-  const { place, checkin, checkout, guests, name, price, email } = req.body;
+const createBooking = async (req, res) => {
+  try {
+    const userId = await getUserId(req);
+    const { place, checkin, checkout, guests, name, price, email } = req.body;
 
-  const Booking = await bookingHotel.create({
-    place,
-    checkin,
-    checkout,
-    guests,
-    name,
-    price,
-    email,
-    owner: userId.id,
-  });
+    const booking = await bookingHotel.create({
+      place,
+      checkin,
+      checkout,
+      guests,
+      name,
+      price,
+      email,
+      owner: userId, // Assign the user ID to the owner field
+    });
 
-  res.json({ message: "ok", Booking });
+    res.status(201).json({ message: "Booking created successfully", booking });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
 };
 
-const bookingDetail = async (req, res) => {
+const getBookingDetails = async (req, res) => {
   try {
-    const userId = await getUserId(req); 
-    const bookings = await bookingHotel.find({ owner: userId.id }).populate("place");
-    res.json(bookings); 
+    const userId = await getUserId(req);
+    const bookings = await bookingHotel
+      .find({ owner: userId })
+      .populate("place");
+
+    res.status(200).json(bookings);
   } catch (err) {
-    res.status(500).json({ error: 'Something went wrong' }); 
+    res.status(500).json({ error: "Something went wrong" });
+  }
+};
+
+const handleBookingUpdate = async (req, res) => {
+  const { id, checkin, checkout, guests, price } = req.body;
+  const token = req.cookies.token; // Ensure token is properly extracted
+
+  if (!token) {
+    return res.status(401).json({ message: "Unauthorized: No token provided" });
+  }
+
+  try {
+    const userDoc = jwt.verify(token, JWT_SECRET); // Verify the token to get the user
+    const booking = await bookingHotel.findById(id);
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+    if (booking.owner.toString() === userDoc.id) {
+      booking.set({ checkin, checkout, guests, price });
+      await booking.save();
+      res
+        .status(200)
+        .json({ message: "Booking updated successfully", booking });
+    }
+  } catch (err) {
+    res.status(500).json({ message: "Server error", err });
+  }
+};
+
+const handleDelete = async (req, res) => {
+  const { id } = req.body;
+  await bookingHotel.findByIdAndDelete(id);
+  res.json({ message: "Booking deleted successfully" });
+};
+
+const userWishlist = async (req, res) => {
+  try {
+    const userId = await getUserId(req);
+    const { hotelId } = req.body;
+
+    // Check if the hotel is already in the user's wishlist
+    const existingWishlistItem = await Wishlist.findOne({
+      user: userId,
+      hotel: hotelId,
+    });
+    if (existingWishlistItem) {
+      return res
+        .status(400)
+        .json({ message: "Hotel is already in your wishlist." });
+    }
+
+    // Create and save the new wishlist item
+    const wishlistItem = await Wishlist.create({
+      user: userId,
+      hotel: hotelId,
+    });
+
+    const wishlistItemWithHotel = await wishlistItem.populate("hotel");
+    // Respond with a success message
+    res.status(201).json({
+      message: "Hotel added to your wishlist.",
+      wishlistItemWithHotel,
+    });
+  } catch (error) {
+    // Send a generic error message
+    res.status(500).json({
+      message: "An error occurred while adding the hotel to your wishlist.",
+      error,
+    });
+  }
+};
+
+const wishList = async (req, res) => {
+  try {
+    const userId = await getUserId(req);
+
+    const hotelwishlist = await Wishlist.find({ user: userId }).populate(
+      "hotel"
+    );
+    res.json({ hotelwishlist });
+  } catch (error) {
+    res.json({ message: "error" });
+  }
+};
+
+const removeWishlist = async (req, res) => {
+  try {
+    const { hotelId } = req.body;
+    const userId = await getUserId(req);
+    const removed = await Wishlist.findOneAndDelete({hotel : hotelId, user : userId});
+    res.json({ message: "Hotel removed from wishlist", removed});
+  } catch (error) {
+    res.json({ message: "error" });
   }
 };
 
@@ -306,6 +409,11 @@ module.exports = {
   hotelId,
   update,
   Places,
-  booking,
-  bookingDetail,
+  createBooking,
+  getBookingDetails,
+  handleBookingUpdate,
+  handleDelete,
+  userWishlist,
+  wishList,
+  removeWishlist,
 };
